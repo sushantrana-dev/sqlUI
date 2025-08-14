@@ -1,0 +1,10 @@
+// Import all styles using modern @use syntax
+@use 'variables';
+@use 'base';
+@use 'components/layout';
+@use 'components/buttons';
+@use 'components/query-panel';
+@use 'components/results-panel';
+@use 'components/data-table';
+@use 'components/virtualized-table';
+@use 'components/notifications'; 

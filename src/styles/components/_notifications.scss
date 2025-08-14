@@ -1,0 +1,394 @@
+@use '../variables';
+
+// Notification container
+.notification-container {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: var(--z-notification);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-width: 25rem;
+  pointer-events: none; // Allow clicks to pass through to elements behind
+
+  // Enable pointer events on notifications themselves
+  .notification {
+    pointer-events: auto;
+  }
+}
+
+// Base notification styles
+.notification {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(0.5rem);
+  border: 0.0625rem solid transparent;
+  min-width: 18.75rem;
+  max-width: 25rem;
+  animation: notification-slide-in 0.3s ease-out;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+
+  // Progress bar for auto-close
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 0.1875rem;
+    background: currentColor;
+    opacity: 0.3;
+    animation: notification-progress 5s linear;
+  }
+
+  &:hover {
+    transform: translateY(-0.125rem);
+    box-shadow: var(--shadow-xl);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0; // Allow text to wrap
+  }
+
+  &__message {
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    word-wrap: break-word;
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+
+    &:hover {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 0.125rem currentColor;
+      opacity: 1;
+    }
+  }
+}
+
+// Theme-aware notification variants
+.notification {
+  // Success notification
+  &--success {
+    background: var(--color-success-light);
+    color: var(--color-success-dark);
+    border-color: var(--color-success);
+
+    .notification__icon {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .notification__close:hover {
+      background-color: rgba(34, 197, 94, 0.1);
+    }
+  }
+
+  // Error notification
+  &--error {
+    background: var(--color-error-light);
+    color: var(--color-error-dark);
+    border-color: var(--color-error);
+
+    .notification__icon {
+      background: var(--color-error);
+      color: white;
+    }
+
+    .notification__close:hover {
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  // Warning notification
+  &--warning {
+    background: var(--color-warning-light);
+    color: var(--color-warning-dark);
+    border-color: var(--color-warning);
+
+    .notification__icon {
+      background: var(--color-warning);
+      color: white;
+    }
+
+    .notification__close:hover {
+      background-color: rgba(245, 158, 11, 0.1);
+    }
+  }
+
+  // Info notification
+  &--info {
+    background: var(--color-info-light);
+    color: var(--color-info-dark);
+    border-color: var(--color-info);
+
+    .notification__icon {
+      background: var(--color-info);
+      color: white;
+    }
+
+    .notification__close:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+// Dark theme overrides
+[data-theme="dark"] {
+  .notification {
+    &--success {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--color-success-light);
+      border-color: var(--color-success);
+    }
+
+    &--error {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--color-error-light);
+      border-color: var(--color-error);
+    }
+
+    &--warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-warning-light);
+      border-color: var(--color-warning);
+    }
+
+    &--info {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--color-info-light);
+      border-color: var(--color-info);
+    }
+
+    &__close:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Animations
+@keyframes notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%) translateY(-0.625rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes notification-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%) translateY(-0.625rem);
+  }
+}
+
+@keyframes notification-progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+// Exit animation class
+.notification--exiting {
+  animation: notification-slide-out 0.3s ease-in forwards;
+}
+
+// Confirmation Modal
+.confirmation-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+  backdrop-filter: blur(0.25rem);
+}
+
+.confirmation-modal {
+  background: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-width: 28rem;
+  width: 100%;
+  border: 0.0625rem solid var(--color-border);
+  overflow: hidden;
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+.confirmation-modal__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-bottom: 0.0625rem solid var(--color-border);
+  position: relative;
+}
+
+.confirmation-modal__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--color-surface-hover);
+  flex-shrink: 0;
+}
+
+.confirmation-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+  flex: 1;
+}
+
+.confirmation-modal__close {
+  background: transparent;
+  border: 0;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+  }
+  
+  &:focus-visible {
+    outline: 0.125rem solid var(--color-primary);
+    outline-offset: 0.125rem;
+  }
+}
+
+.confirmation-modal__content {
+  padding: var(--spacing-lg);
+}
+
+.confirmation-modal__message {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  font-size: var(--font-size-md);
+}
+
+.confirmation-modal__footer {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-top: 0.0625rem solid var(--color-border);
+  justify-content: flex-end;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Dark mode overrides for confirmation modal
+[data-theme="dark"] {
+  .confirmation-modal {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+  
+  .confirmation-modal__close {
+    color: var(--color-text-secondary);
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--color-text);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 48rem) {
+  .notification-container {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    max-width: none;
+  }
+
+  .notification {
+    min-width: auto;
+    max-width: none;
+  }
+}
+
+@media (max-width: 30rem) {
+  .notification {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
+
+    &__message {
+      font-size: var(--font-size-xs);
+    }
+
+    &__close {
+      padding: var(--spacing-xs);
+    }
+  }
+} 
