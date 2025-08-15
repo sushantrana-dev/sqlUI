@@ -1,18 +1,21 @@
-import React, { useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { Suspense, useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './types';
 import { initializePredefinedQueries } from './store/slices/querySlice';
 import { toggleQueryPanel } from './store/slices/uiSlice';
 import Header from './components/Layout/Header';
 import StatusBar from './components/Layout/StatusBar';
-import CollapsedQueryTab from './components/QueryPanel/CollapsedQueryTab';
-import NotificationSystem from './components/common/NotificationSystem';
+import QueryHistorySidebar from './components/QueryHistory/QueryHistorySidebar';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import './styles/main.scss';
 
-// Lazy load heavy components
-const QueryPanel = lazy(() => import('./components/QueryPanel/QueryPanel'));
-const ResultsPanel = lazy(() => import('./components/ResultsPanel/ResultsPanel'));
+// Lazy load components for better performance
+const QueryPanel = React.lazy(() => import('./components/QueryPanel/QueryPanel'));
+const ResultsPanel = React.lazy(() => import('./components/ResultsPanel/ResultsPanel'));
+const CollapsedQueryTab = React.lazy(() => import('./components/QueryPanel/CollapsedQueryTab'));
+const NotificationSystem = React.lazy(() => import('./components/common/NotificationSystem'));
 
-// Loading fallback components
+// Fallback components
 const QueryPanelFallback = () => (
   <div className="query-panel-loading">
     <div className="loading-spinner" />
@@ -24,6 +27,13 @@ const ResultsPanelFallback = () => (
   <div className="results-panel-loading">
     <div className="loading-spinner" />
     <span>Loading Results Panel...</span>
+  </div>
+);
+
+const CollapsedQueryTabFallback = () => (
+  <div className="query-collapsed-loading">
+    <div className="loading-spinner" />
+    <span>Loading...</span>
   </div>
 );
 
@@ -69,56 +79,54 @@ const App: React.FC = React.memo(() => {
     title: isQueryPanelCollapsed ? 'Expand query panel' : 'Collapse query panel'
   }), [handleToggleQueryPanel, isQueryPanelCollapsed]);
 
-  // Memoized collapsed content
-  const collapsedContent = useMemo(() => {
-    if (isQueryPanelCollapsed) {
-      return (
-        <div className="query-collapsed-container">
-          <CollapsedQueryTab />
-        </div>
-      );
-    }
-    return (
-      <div className="query-panel" style={queryPanelStyle}>
-        <Suspense fallback={<QueryPanelFallback />}>
-          <QueryPanel />
+  return (
+    <ErrorBoundary>
+      <div className="app">
+        <Header />
+        
+        <main className="app__main">
+          {isQueryPanelCollapsed ? (
+            <div className="query-collapsed-container">
+              <Suspense fallback={<CollapsedQueryTabFallback />}>
+                <CollapsedQueryTab />
+              </Suspense>
+            </div>
+          ) : (
+            <div className="query-panel" style={queryPanelStyle}>
+              <Suspense fallback={<QueryPanelFallback />}>
+                <QueryPanel />
+              </Suspense>
+            </div>
+          )}
+          
+          <div className="splitter" role="separator" aria-orientation="vertical">
+            <button
+              className="splitter__toggle"
+              {...splitterButtonProps}
+            >
+              {isQueryPanelCollapsed ? '›' : '‹'}
+            </button>
+          </div>
+          
+          <div className="results-panel">
+            <Suspense fallback={<ResultsPanelFallback />}>
+              <ResultsPanel />
+            </Suspense>
+          </div>
+        </main>
+        
+        <StatusBar />
+        
+        {/* Query History Sidebar */}
+        <QueryHistorySidebar />
+        
+        {/* Notification System */}
+        <Suspense fallback={null}>
+          <NotificationSystem />
         </Suspense>
       </div>
-    );
-  }, [isQueryPanelCollapsed, queryPanelStyle]);
-
-  return (
-    <div className="app">
-      <Header />
-      
-      <main className="app__main">
-        {collapsedContent}
-
-        {/* Splitter with collapse/expand toggle */}
-        <div className="splitter" role="separator" aria-orientation="vertical">
-          <button
-            className="splitter__toggle"
-            {...splitterButtonProps}
-          >
-            {isQueryPanelCollapsed ? '›' : '‹'}
-          </button>
-        </div>
-
-        <div className="results-panel">
-          <Suspense fallback={<ResultsPanelFallback />}>
-            <ResultsPanel />
-          </Suspense>
-        </div>
-      </main>
-
-      <StatusBar />
-      
-      {/* Global components */}
-      <NotificationSystem />
-    </div>
+    </ErrorBoundary>
   );
 });
-
-App.displayName = 'App';
 
 export default App; 

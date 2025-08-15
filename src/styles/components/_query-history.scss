@@ -1,0 +1,216 @@
+// Query History Sidebar
+.query-history-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 24rem;
+  height: 100vh;
+  background: var(--color-surface);
+  border-left: 0.0625rem solid var(--color-border);
+  box-shadow: var(--shadow-xl);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.3s ease-out;
+  overflow: hidden;
+}
+
+.query-history-sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 0.0625rem solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.query-history-sidebar__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  
+  h2 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+  }
+}
+
+.query-history-sidebar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.query-history-sidebar__content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.query-history-sidebar__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+  
+  h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+    color: var(--color-text);
+  }
+  
+  p {
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+}
+
+.query-history-sidebar__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+}
+
+// Query History Item
+.query-history-item {
+  background: var(--color-surface);
+  border: 0.0625rem solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.query-history-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.query-history-item__timestamp {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.query-history-item__execution-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--color-surface-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.query-history-item__query {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-sm);
+  word-break: break-word;
+  white-space: pre-wrap;
+  max-height: 4rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.query-history-item__actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  
+  .btn {
+    flex: 1;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    
+    span {
+      margin-left: var(--spacing-xs);
+    }
+  }
+}
+
+// Animation
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Dark mode overrides
+[data-theme="dark"] {
+  .query-history-sidebar {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+  
+  .query-history-item {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    
+    &:hover {
+      border-color: var(--color-primary);
+      background: var(--color-surface-hover);
+    }
+  }
+  
+  .query-history-item__execution-time {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+// Responsive design
+@media (max-width: 48rem) {
+  .query-history-sidebar {
+    width: 100vw;
+    right: 0;
+  }
+  
+  .query-history-sidebar__header {
+    padding: var(--spacing-md);
+  }
+  
+  .query-history-sidebar__list {
+    padding: var(--spacing-sm);
+  }
+  
+  .query-history-item {
+    padding: var(--spacing-sm);
+  }
+  
+  .query-history-item__actions {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+} 
