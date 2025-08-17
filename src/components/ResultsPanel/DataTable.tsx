@@ -100,6 +100,8 @@ const OptimizedSearchBar: React.FC<{
         placeholder="Search results..."
         value={value}
         onChange={onChange}
+        title="Search is limited to the current page only"
+        aria-label="Search results (current page only)"
       />
       {isSearching && (
         <div className="search-loading-indicator">
