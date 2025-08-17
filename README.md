@@ -10,7 +10,7 @@ A modern, high-performance SQL query execution interface built with React, Redux
 
 ## 📹 Implementation Walkthrough
 
-**[Watch Demo Video](https://youtu.be/example)** *(Under 3 minutes)*
+**[Watch Demo Video](https://drive.google.com/file/d/1D8k8UzDBWU-S9FI-XlZCdaFrJ3EmckvK/view?usp=sharing)** *(Under 3 minutes)*
 
 ## ✨ Features
 
