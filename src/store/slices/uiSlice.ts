@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UIState, Theme, Notification } from '../../types';
 
 const initialState: UIState = {
-  theme: 'light',
+  theme: 'dark',
   sidebarWidth: 40,
   showHistory: false,
   notifications: [],
