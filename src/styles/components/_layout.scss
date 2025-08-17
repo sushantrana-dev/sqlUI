@@ -48,7 +48,7 @@
 .header {
   &__brand {
     display: flex;
-    align-items: center;
+    align-items: end;
     gap: var(--spacing-md);
     
     &-logo {

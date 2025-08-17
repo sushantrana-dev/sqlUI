@@ -62,8 +62,8 @@ const QuerySelector: React.FC<QuerySelectorProps> = React.memo(({
   }, [categories]);
 
   return (
-    <div className="query-panel__selector">
-      <div className="query-panel__selector-header">
+    <div className="query-panel__selector" data-testid="query-selector">
+      <div className="query-panel__selector-header" data-testid="query-selector-header">
         <label className="query-panel__selector-label">
           Predefined Queries
         </label>
@@ -74,6 +74,7 @@ const QuerySelector: React.FC<QuerySelectorProps> = React.memo(({
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             title="Filter by category"
+            data-testid="category-filter"
           >
             {categoryOptions}
           </select>
@@ -84,13 +85,14 @@ const QuerySelector: React.FC<QuerySelectorProps> = React.memo(({
         className="query-panel__selector-select"
         value={selectedId || ''}
         onChange={handleSelectChange}
+        data-testid="query-selector-select"
       >
         <option value="">Select a predefined query...</option>
         {options}
       </select>
 
       {selectedQuery && (
-        <div className="query-panel__selector-details">
+        <div className="query-panel__selector-details" data-testid="query-details">
           <div className="query-panel__selector-description">
             {selectedQuery.description}
           </div>
@@ -104,7 +106,7 @@ const QuerySelector: React.FC<QuerySelectorProps> = React.memo(({
       )}
 
       {filteredQueries.length === 0 && (
-        <div className="query-panel__selector-empty">
+        <div className="query-panel__selector-empty" data-testid="empty-state">
           No queries found
         </div>
       )}

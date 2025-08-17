@@ -31,13 +31,14 @@ class ErrorBoundary extends Component<Props, State> {
       }
       
       return (
-        <div className="error-boundary">
-          <div className="error-boundary__content">
+        <div className="error-boundary" data-testid="error-boundary">
+          <div className="error-boundary__content" data-testid="error-content">
             <h2>Something went wrong</h2>
             <p>Please refresh the page to try again.</p>
             <button 
               onClick={() => window.location.reload()}
               className="btn btn--primary"
+              data-testid="refresh-button"
             >
               Refresh Page
             </button>
