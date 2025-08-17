@@ -332,6 +332,27 @@ export const executeQueryWithPagination = createAsyncThunk(
   }
 );
 
+// Async thunk for complete dataset export (no pagination)
+export const executeQueryForExport = createAsyncThunk(
+  'query/executeForExport',
+  async (queryText: string, { getState }) => {
+    const state = getState() as RootState;
+    const selectedQueryId = state.query.selectedQueryId;
+    
+    // Execute query with a very large limit to get complete dataset
+    const result = await mockQueryExecution(queryText, selectedQueryId, {
+      page: 1,
+      limit: 1000000, // Very large limit to get all data
+      search: undefined,
+      filters: undefined,
+      sortBy: undefined,
+      sortOrder: 'asc'
+    });
+    
+    return result;
+  }
+);
+
 // Use enhanced predefined queries
 const predefinedQueries: Query[] = SAMPLE_QUERIES.map(query => ({
   id: query.id,
