@@ -81,7 +81,6 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
         includeHeaders: exportOptions.includeHeaders,
         selectedRows: exportRows,
         format: exportOptions.format,
-        exportCompleteDataset: exportOptions.exportCompleteDataset,
         onProgress: (progress) => {
           setExportProgress(progress);
         }

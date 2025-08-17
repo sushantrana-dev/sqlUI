@@ -3,7 +3,6 @@ export interface ExportOptions {
   includeHeaders?: boolean;
   selectedRows?: number[];
   format?: 'csv' | 'json';
-  exportCompleteDataset?: boolean;
   onProgress?: (progress: number) => void;
 }
 
@@ -99,7 +98,6 @@ export const downloadData = async (
   const { 
     filename = 'report.csv', 
     format = 'csv',
-    exportCompleteDataset = false,
     onProgress 
   } = options;
   
@@ -146,17 +144,6 @@ export const downloadData = async (
     console.error('Error exporting file:', error);
     throw new Error(`Failed to export ${format.toUpperCase()} file`);
   }
-};
-
-/**
- * Legacy function for backward compatibility
- */
-export const downloadCSV = async (
-  data: Record<string, any>[],
-  columns: string[],
-  options: ExportOptions = {}
-): Promise<void> => {
-  return downloadData(data, columns, { ...options, format: 'csv' });
 };
 
 /**
