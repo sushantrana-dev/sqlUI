@@ -4,6 +4,7 @@ import { RootState } from '../../types';
 import ResultsHeader from './ResultsHeader';
 import DataTable from './DataTable';
 import ResultsEmpty from './ResultsEmpty';
+import PaginationControls from './PaginationControls';
 
 const ResultsPanel: React.FC = () => {
   const currentResults = useSelector((state: RootState) => state.results.currentResults);
@@ -40,6 +41,7 @@ const ResultsPanel: React.FC = () => {
       <div className="results-panel__table-container">
         <DataTable />
       </div>
+      <PaginationControls />
     </div>
   );
 };

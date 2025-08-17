@@ -149,11 +149,11 @@
       width: 0.5rem;
       height: 0.5rem;
       border-radius: 50%;
-      background-color: var(--color-text-muted);
+      background-color: var(--color-success);
       
       &--executing {
         background-color: var(--color-warning);
-        animation: pulse 2s infinite;
+        animation: pulse 1s infinite;
       }
       
       &--success {
@@ -400,6 +400,180 @@
     text-align: center;
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
+  }
+}
+
+// Collapsed Query Tab (Accordion Style)
+.query-collapsed-tab {
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background: var(--color-surface-hover);
+    transform: translateX(2px);
+    
+    .query-collapsed-tab__arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  &:active {
+    transform: translateX(1px);
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    max-width: 120px;
+    text-align: center;
+  }
+
+  &__icon {
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary-light);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background: var(--color-primary);
+      color: white;
+      transform: scale(1.05);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    width: 100%;
+  }
+
+  &__title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.2;
+  }
+
+  &__arrow {
+    color: var(--color-text-secondary);
+    transition: transform 0.2s ease-in-out;
+    margin-top: var(--spacing-xs);
+  }
+}
+
+// Mobile Responsive Design
+@media (max-width: 768px) {
+  .query-collapsed-tab {
+    padding: var(--spacing-sm);
+    min-height: 80px;
+
+    &__content {
+      max-width: 100px;
+      gap: var(--spacing-xs);
+    }
+
+    &__icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    &__title {
+      font-size: var(--font-size-xs);
+      letter-spacing: 0.3px;
+    }
+
+    &__subtitle {
+      font-size: 10px;
+    }
+
+    &__arrow {
+      margin-top: 0;
+    }
+  }
+}
+
+// Tablet Responsive Design
+@media (min-width: 769px) and (max-width: 1024px) {
+  .query-collapsed-tab {
+    &__content {
+      max-width: 110px;
+    }
+
+    &__icon {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+
+// Dark mode overrides
+[data-theme="dark"] {
+  .query-collapsed-tab {
+    background: var(--color-surface);
+    border-right-color: var(--color-border);
+
+    &:hover {
+      background: var(--color-surface-hover);
+    }
+
+    &__icon {
+      background: var(--color-primary-dark);
+      color: var(--color-primary);
+
+      &:hover {
+        background: var(--color-primary);
+        color: white;
+      }
+    }
+  }
+}
+
+// Animation for smooth transitions
+.query-collapsed-tab {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 

@@ -3,14 +3,15 @@ import { useAppDispatch } from '../../store';
 import { 
   Play, 
   Trash2, 
-  Copy
+  Copy,
+  ChevronLeft
 } from 'lucide-react';
 import { 
   copyCurrentQuery,
   clearQuery
 } from '../../store/slices/querySlice';
 import { clearResults } from '../../store/slices/resultsSlice';
-import { addNotification } from '../../store/slices/uiSlice';
+import { addNotification, toggleQueryPanel } from '../../store/slices/uiSlice';
 import ConfirmationModal from '../common/ConfirmationModal';
 
 interface QueryActionsProps {
@@ -26,6 +27,8 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
 }) => {
   const dispatch = useAppDispatch();
   const [showClearConfirmation, setShowClearConfirmation] = useState(false);
+  
+
 
   // Stable callback references
   const handleExecute = useCallback(() => {
@@ -71,6 +74,10 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
       }));
     }
   }, [dispatch, hasQuery]);
+
+  const handleCollapse = useCallback(() => {
+    dispatch(toggleQueryPanel());
+  }, [dispatch]);
 
   // Memoized button states
   const executeButtonDisabled = useMemo(() => {
@@ -138,6 +145,17 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
             />
             <span>{statusText}</span>
           </div>
+          
+          <div className="query-panel__actions-divider" />
+          
+          <button 
+            className="btn btn--ghost btn--sm"
+            onClick={handleCollapse}
+            aria-label="Collapse query panel"
+            title="Collapse query panel"
+          >
+            <ChevronLeft size={16} />
+          </button>
         </div>
       </div>
 

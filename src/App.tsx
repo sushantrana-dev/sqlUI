@@ -2,7 +2,6 @@ import React, { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './types';
 import { initializePredefinedQueries } from './store/slices/querySlice';
-import { toggleQueryPanel } from './store/slices/uiSlice';
 import Header from './components/Layout/Header';
 import StatusBar from './components/Layout/StatusBar';
 import QueryHistorySidebar from './components/QueryHistory/QueryHistorySidebar';
@@ -50,10 +49,6 @@ const App: React.FC = React.memo(() => {
     dispatch(initializePredefinedQueries());
   }, [dispatch]);
 
-  const handleToggleQueryPanel = useCallback(() => {
-    dispatch(toggleQueryPanel());
-  }, [dispatch]);
-
   const handleThemeChange = useCallback(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
@@ -71,13 +66,6 @@ const App: React.FC = React.memo(() => {
   const queryPanelStyle = useMemo(() => ({
     flex: `0 0 ${sidebarWidth}%`
   }), [sidebarWidth]);
-
-  // Memoized splitter button props
-  const splitterButtonProps = useMemo(() => ({
-    onClick: handleToggleQueryPanel,
-    'aria-label': isQueryPanelCollapsed ? 'Expand query panel' : 'Collapse query panel',
-    title: isQueryPanelCollapsed ? 'Expand query panel' : 'Collapse query panel'
-  }), [handleToggleQueryPanel, isQueryPanelCollapsed]);
 
   return (
     <ErrorBoundary>
@@ -98,15 +86,6 @@ const App: React.FC = React.memo(() => {
               </Suspense>
             </div>
           )}
-          
-          <div className="splitter" role="separator" aria-orientation="vertical">
-            <button
-              className="splitter__toggle"
-              {...splitterButtonProps}
-            >
-              {isQueryPanelCollapsed ? '›' : '‹'}
-            </button>
-          </div>
           
           <div className="results-panel">
             <Suspense fallback={<ResultsPanelFallback />}>

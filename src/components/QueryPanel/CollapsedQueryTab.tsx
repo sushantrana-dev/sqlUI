@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { Database, ChevronRight } from 'lucide-react';
 import { toggleQueryPanel } from '../../store/slices/uiSlice';
 
 const CollapsedQueryTab: React.FC = () => {
@@ -7,7 +8,7 @@ const CollapsedQueryTab: React.FC = () => {
 
   const handleExpand = () => dispatch(toggleQueryPanel());
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleExpand();
@@ -15,17 +16,27 @@ const CollapsedQueryTab: React.FC = () => {
   };
 
   return (
-    <div className="query-collapsed-tab" role="navigation" aria-label="Collapsed query panel">
-      <button
-        type="button"
-        className="query-collapsed-tab__button"
-        onClick={handleExpand}
-        onKeyDown={handleKeyDown}
-        aria-label="Expand Query Editor"
-        data-testid="collapsed-query-tab"
-      >
-        <span className="query-collapsed-tab__text">QUERY EDITOR</span>
-      </button>
+    <div 
+      className="query-collapsed-tab" 
+      role="button"
+      tabIndex={0}
+      onClick={handleExpand}
+      onKeyDown={handleKeyDown}
+      aria-label="Expand query editor"
+      data-testid="collapsed-query-tab"
+    >
+      <div className="query-collapsed-tab__content">
+        <div className="query-collapsed-tab__icon">
+          <Database size={20} />
+        </div>
+        <div className="query-collapsed-tab__text">
+          <span className="query-collapsed-tab__title">Query Editor</span>
+          <span className="query-collapsed-tab__subtitle">Click to expand</span>
+        </div>
+        <div className="query-collapsed-tab__arrow">
+          <ChevronRight size={16} />
+        </div>
+      </div>
     </div>
   );
 };

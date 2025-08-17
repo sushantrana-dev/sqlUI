@@ -13,6 +13,11 @@ const getRandomCount = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+// Helper function to generate large datasets for pagination testing
+const getLargeCount = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 export const SAMPLE_QUERIES: EnhancedQuery[] = [
   {
     id: 'employee-list',
@@ -32,10 +37,10 @@ ORDER BY lastName, firstName;`,
     description: 'Basic employee directory with contact information',
     category: 'hr',
     complexity: 'basic',
-    estimatedRows: getRandomCount(8, 15),
+    estimatedRows: getLargeCount(150, 300),
     datasetConfig: {
       type: 'employees',
-      count: getRandomCount(8, 15)
+      count: getLargeCount(150, 300)
     }
   },
 
@@ -57,10 +62,10 @@ ORDER BY e.reportsTo, e.lastName;`,
     description: 'Employee reporting structure and management hierarchy',
     category: 'hr',
     complexity: 'intermediate',
-    estimatedRows: getRandomCount(8, 15),
+    estimatedRows: getLargeCount(150, 300),
     datasetConfig: {
       type: 'employees',
-      count: getRandomCount(8, 15)
+      count: getLargeCount(150, 300)
     }
   },
 

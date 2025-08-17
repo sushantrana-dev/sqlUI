@@ -6,10 +6,13 @@ const initialState: ResultsState = {
   executionTime: null,
   sortConfig: null,
   currentPage: 1,
-  pageSize: 50,
+  pageSize: 25,
   searchTerm: '',
   selectedRows: [],
-  selectedColumns: []
+  selectedColumns: [],
+  filters: {},
+  sortBy: undefined,
+  sortOrder: 'asc'
 };
 
 const resultsSlice = createSlice({
@@ -19,7 +22,8 @@ const resultsSlice = createSlice({
     setResults: (state, action: PayloadAction<QueryResult>) => {
       state.currentResults = action.payload;
       state.executionTime = action.payload.executionTime;
-      state.currentPage = 1;
+      state.currentPage = action.payload.currentPage;
+      state.pageSize = action.payload.pageSize;
       state.searchTerm = '';
       state.selectedRows = [];
       state.selectedColumns = action.payload.columns;
@@ -70,6 +74,15 @@ const resultsSlice = createSlice({
       state.searchTerm = '';
       state.selectedRows = [];
       state.selectedColumns = [];
+    },
+    setFilters: (state, action: PayloadAction<Record<string, any>>) => {
+      state.filters = action.payload;
+      state.currentPage = 1;
+    },
+    setSortBy: (state, action: PayloadAction<{ column: string; order: 'asc' | 'desc' }>) => {
+      state.sortBy = action.payload.column;
+      state.sortOrder = action.payload.order;
+      state.currentPage = 1;
     }
   }
 });
@@ -84,7 +97,9 @@ export const {
   setSelectedColumns,
   toggleRowSelection,
   toggleColumnSelection,
-  clearResults
+  clearResults,
+  setFilters,
+  setSortBy
 } = resultsSlice.actions;
 
 export default resultsSlice.reducer; 

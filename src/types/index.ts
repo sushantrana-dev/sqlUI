@@ -25,6 +25,20 @@ export interface QueryResult {
   executionTime: number;
   rowCount: number;
   columns: string[];
+  totalCount: number;
+  currentPage: number;
+  totalPages: number;
+  hasMore: boolean;
+  pageSize: number;
+}
+
+export interface PaginationParams {
+  page: number;
+  limit: number;
+  search?: string;
+  filters?: Record<string, any>;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface SortConfig {
@@ -74,4 +88,7 @@ export interface ResultsState {
   searchTerm: string;
   selectedRows: number[];
   selectedColumns: string[];
+  filters?: Record<string, any>;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 } 
