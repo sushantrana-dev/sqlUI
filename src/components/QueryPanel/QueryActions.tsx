@@ -97,14 +97,15 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
 
   return (
     <>
-      <div className="query-panel__actions">
-        <div className="query-panel__actions-left">
+      <div className="query-panel__actions" data-testid="query-actions">
+        <div className="query-panel__actions-left" data-testid="query-actions-left">
           <button 
             className={`btn btn--primary ${isExecuting ? 'btn--loading' : ''}`}
             onClick={handleExecute}
             disabled={executeButtonDisabled}
             aria-label="Execute query"
             title="Execute query"
+            data-testid="execute-button"
           >
             <div className="btn--content">
               <Play size={16} />
@@ -118,6 +119,7 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
             disabled={clearButtonDisabled}
             aria-label="Clear query"
             title="Clear query"
+            data-testid="clear-button"
           >
             <Trash2 size={16} />
             Clear
@@ -131,17 +133,19 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
             disabled={!hasQuery || isExecuting}
             aria-label="Copy query"
             title="Copy query to clipboard"
+            data-testid="copy-button"
           >
             <Copy size={14} />
           </button>
         </div>
         
-        <div className="query-panel__actions-right">
+        <div className="query-panel__actions-right" data-testid="query-actions-right">
           <div className="query-panel__status">
             <div 
               className={`query-panel__status-indicator ${
                 isExecuting ? 'query-panel__status-indicator--executing' : ''
               }`}
+              data-testid="status-indicator"
             />
             <span>{statusText}</span>
           </div>
@@ -153,6 +157,7 @@ const QueryActions: React.FC<QueryActionsProps> = React.memo(({
             onClick={handleCollapse}
             aria-label="Collapse query panel"
             title="Collapse query panel"
+            data-testid="collapse-button"
           >
             <ChevronLeft size={16} />
           </button>

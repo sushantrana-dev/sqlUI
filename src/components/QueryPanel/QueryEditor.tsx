@@ -24,7 +24,7 @@ const QueryEditor: React.FC<QueryEditorProps> = React.memo(({
   }, []);
 
   return (
-    <div className="query-panel__editor">
+    <div className="query-panel__editor" data-testid="query-editor-container">
       <Editor
         height="100%"
         defaultLanguage="sql"
@@ -69,6 +69,7 @@ const QueryEditor: React.FC<QueryEditorProps> = React.memo(({
             showIssues: true,
           }
         }}
+        data-testid="query-editor"
       />
     </div>
   );

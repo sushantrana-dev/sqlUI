@@ -68,7 +68,7 @@ const App: React.FC = React.memo(() => {
   }), [sidebarWidth]);
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary data-testid="error-boundary">
       <div className="app">
         <Header />
         
@@ -80,14 +80,14 @@ const App: React.FC = React.memo(() => {
               </Suspense>
             </div>
           ) : (
-            <div className="query-panel" style={queryPanelStyle}>
+            <div className="query-panel" style={queryPanelStyle} data-testid="query-panel">
               <Suspense fallback={<QueryPanelFallback />}>
                 <QueryPanel />
               </Suspense>
             </div>
           )}
           
-          <div className="results-panel">
+          <div className="results-panel" data-testid="results-panel">
             <Suspense fallback={<ResultsPanelFallback />}>
               <ResultsPanel />
             </Suspense>
@@ -97,11 +97,11 @@ const App: React.FC = React.memo(() => {
         <StatusBar />
         
         {/* Query History Sidebar */}
-        <QueryHistorySidebar />
+        <QueryHistorySidebar data-testid="query-history-sidebar" />
         
         {/* Notification System */}
         <Suspense fallback={null}>
-          <NotificationSystem />
+          <NotificationSystem data-testid="notification-system" />
         </Suspense>
       </div>
     </ErrorBoundary>

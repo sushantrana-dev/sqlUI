@@ -77,7 +77,7 @@ const DataTable: React.FC = React.memo(() => {
       <OptimizedSearchBar {...searchBarProps} />
 
       {/* Virtualized Table */}
-      <div className="table-container">
+      <div className="table-container" data-testid="data-table">
         <VirtualizedTable {...tableProps} />
       </div>
     </>

@@ -140,7 +140,7 @@ const PaginationControls: React.FC = () => {
   const { totalCount, currentPage: page, totalPages, startItem, endItem } = paginationInfo;
 
   return (
-    <div className="pagination-controls">
+    <div className="pagination-controls" data-testid="pagination-controls">
       <div className="pagination-info">
         <span>
           Showing {startItem}-{endItem} of {totalCount.toLocaleString()} results

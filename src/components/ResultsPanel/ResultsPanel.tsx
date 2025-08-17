@@ -12,12 +12,12 @@ const ResultsPanel: React.FC = () => {
 
   if (isExecuting) {
     return (
-      <div className="results-panel">
+      <div className="results-panel" data-testid="results-panel">
         <ResultsHeader />
-        <div className="results-panel__table-container">
-          <div className="data-table__loading">
-            <div className="data-table__loading-spinner" />
-            <div className="data-table__loading-text">Executing query...</div>
+        <div className="results-panel__table-container" data-testid="table-container">
+          <div className="data-table__loading" data-testid="loading-container">
+            <div className="data-table__loading-spinner" data-testid="loading-spinner" />
+            <div className="data-table__loading-text" data-testid="loading-text">Executing query...</div>
           </div>
         </div>
       </div>
@@ -26,9 +26,9 @@ const ResultsPanel: React.FC = () => {
 
   if (!currentResults) {
     return (
-      <div className="results-panel">
+      <div className="results-panel" data-testid="results-panel">
         <ResultsHeader />
-        <div className="results-panel__table-container">
+        <div className="results-panel__table-container" data-testid="table-container">
           <ResultsEmpty />
         </div>
       </div>
@@ -36,9 +36,9 @@ const ResultsPanel: React.FC = () => {
   }
 
   return (
-    <div className="results-panel">
+    <div className="results-panel" data-testid="results-panel">
       <ResultsHeader />
-      <div className="results-panel__table-container">
+      <div className="results-panel__table-container" data-testid="table-container">
         <DataTable />
       </div>
       <PaginationControls />
