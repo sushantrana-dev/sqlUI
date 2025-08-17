@@ -22,8 +22,15 @@ const Header: React.FC = () => {
   return (
     <header className="app__header">
       <div className="header__brand">
-        <img src={AtlanLogo} alt="Atlan" className="header__brand-logo" />
-        <h1 className="header__brand-title">SQL Runner</h1>
+        <img 
+          src={AtlanLogo} 
+          alt="Atlan" 
+          className="header__brand-logo"
+          width="103"
+          height="32"
+          loading="eager"
+        />
+        <h1 className="header__brand-title">SQL Viewer</h1>
       </div>
       
       <div className="header__actions">
