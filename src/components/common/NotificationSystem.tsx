@@ -78,7 +78,7 @@ const NotificationSystem: React.FC = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="notification-container">
+    <div className="notification-container" data-testid="notification-system">
       {notifications.map((notification) => {
         const isExiting = exitingNotifications.has(notification.id);
         

@@ -64,7 +64,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   };
 
   return (
-    <div className="confirmation-modal-overlay" onClick={onClose}>
+    <div className="confirmation-modal-overlay" onClick={onClose} data-testid="modal-overlay">
       <div 
         className="confirmation-modal"
         onClick={(e) => e.stopPropagation()}
@@ -73,10 +73,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         aria-modal="true"
         aria-labelledby="confirmation-modal-title"
         aria-describedby="confirmation-modal-message"
+        data-testid="modal-content"
       >
-        <div className="confirmation-modal__header">
+        <div className="confirmation-modal__header" data-testid="modal-header">
           <div className="confirmation-modal__icon">
-            <AlertTriangle size={20} style={{ color: getIconColor() }} />
+            <AlertTriangle size={20} style={{ color: getIconColor() }} data-testid="alert-icon" />
           </div>
           <h2 
             id="confirmation-modal-title"
@@ -90,11 +91,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             aria-label="Close modal"
             title="Close modal"
           >
-            <X size={16} />
+            <X size={16} data-testid="close-icon" />
           </button>
         </div>
 
-        <div className="confirmation-modal__content">
+        <div className="confirmation-modal__content" data-testid="modal-content-text">
           <p 
             id="confirmation-modal-message"
             className="confirmation-modal__message"
@@ -103,11 +104,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </p>
         </div>
 
-        <div className="confirmation-modal__footer">
+        <div className="confirmation-modal__footer" data-testid="modal-footer">
           <button
             className="btn btn--secondary"
             onClick={onClose}
             type="button"
+            data-testid="cancel-button"
           >
             {cancelText}
           </button>
@@ -116,6 +118,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             onClick={handleConfirm}
             type="button"
             autoFocus
+            data-testid="confirm-button"
           >
             {confirmText}
           </button>

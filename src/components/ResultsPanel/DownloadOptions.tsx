@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../types';
-import { Download, X } from 'lucide-react';
+import { Download, X, AlertTriangle } from 'lucide-react';
 import { downloadData, generateFilename } from '../../utils/dataExport';
 import { addNotification } from '../../store/slices/uiSlice';
+import { executeQueryForExport } from '../../store/slices/querySlice';
 
 interface DownloadOptionsProps {
   isOpen: boolean;
@@ -19,9 +20,13 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
   const [exportOptions, setExportOptions] = useState({
     includeHeaders: true,
     exportSelectedRows: selectedRows.length > 0,
+    exportCompleteDataset: false,
     customFilename: '',
     format: 'csv' as 'csv' | 'json'
   });
+
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
 
   const handleDownload = useCallback(async () => {
     if (!currentResults) {
@@ -34,6 +39,9 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
     }
 
     try {
+      setIsExporting(true);
+      setExportProgress(0);
+
       // Generate filename
       const defaultFilename = generateFilename(currentQuery.trim() ? 'query_result' : 'sql_report', exportOptions.format);
       const filename = exportOptions.customFilename || defaultFilename;
@@ -43,22 +51,49 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
         ? selectedRows 
         : undefined;
 
-      // Download file
-      await downloadData(currentResults.data, currentResults.columns, {
+      let dataToExport = currentResults.data;
+      let columnsToExport = currentResults.columns;
+      let rowCount = currentResults.rowCount;
+
+      // If exporting complete dataset, fetch all data
+      if (exportOptions.exportCompleteDataset && !exportRows) {
+        dispatch(addNotification({
+          type: 'info',
+          message: 'Fetching complete dataset for export...',
+          duration: 3000
+        }));
+
+        const completeResult = await dispatch(executeQueryForExport(currentQuery) as any).unwrap();
+        dataToExport = completeResult.data;
+        columnsToExport = completeResult.columns;
+        rowCount = completeResult.totalCount;
+
+        dispatch(addNotification({
+          type: 'success',
+          message: `Fetched ${rowCount.toLocaleString()} rows for export`,
+          duration: 3000
+        }));
+      }
+
+      // Download file with progress tracking
+      await downloadData(dataToExport, columnsToExport, {
         filename,
         includeHeaders: exportOptions.includeHeaders,
         selectedRows: exportRows,
-        format: exportOptions.format
+        format: exportOptions.format,
+        onProgress: (progress) => {
+          setExportProgress(progress);
+        }
       });
 
       // Show success notification
-      const rowCount = exportRows ? exportRows.length : currentResults.rowCount;
-      const columnCount = currentResults.columns.length;
+      const finalRowCount = exportRows ? exportRows.length : rowCount;
+      const columnCount = columnsToExport.length;
       const formatUpper = exportOptions.format.toUpperCase();
       
       dispatch(addNotification({
         type: 'success',
-        message: `Exported ${rowCount.toLocaleString()} rows and ${columnCount} columns to ${filename} (${formatUpper})`,
+        message: `Exported ${finalRowCount.toLocaleString()} rows and ${columnCount} columns to ${filename} (${formatUpper})`,
         duration: 5000
       }));
 
@@ -66,13 +101,18 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
     } catch (error) {
       dispatch(addNotification({
         type: 'error',
-        message: `Failed to export ${exportOptions.format.toUpperCase()} file`,
+        message: `Failed to export ${exportOptions.format.toUpperCase()} file: ${error instanceof Error ? error.message : 'Unknown error'}`,
         duration: 5000
       }));
+    } finally {
+      setIsExporting(false);
+      setExportProgress(0);
     }
   }, [currentResults, selectedRows, currentQuery, exportOptions, dispatch, onClose]);
 
   if (!isOpen) return null;
+
+  const showCompleteDatasetWarning = exportOptions.exportCompleteDataset && currentResults?.totalCount && currentResults.totalCount > 10000;
 
   return (
     <div className="download-options-overlay" onClick={onClose}>
@@ -94,6 +134,7 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
                 ...prev, 
                 format: e.target.value as 'csv' | 'json' 
               }))}
+              disabled={isExporting}
             >
               <option value="csv">CSV (Excel compatible)</option>
               <option value="json">JSON (Structured data)</option>
@@ -107,6 +148,7 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
                   type="checkbox"
                   checked={exportOptions.includeHeaders}
                   onChange={(e) => setExportOptions(prev => ({ ...prev, includeHeaders: e.target.checked }))}
+                  disabled={isExporting}
                 />
                 Include column headers
               </label>
@@ -120,9 +162,36 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
                   type="checkbox"
                   checked={exportOptions.exportSelectedRows}
                   onChange={(e) => setExportOptions(prev => ({ ...prev, exportSelectedRows: e.target.checked }))}
+                  disabled={isExporting}
                 />
                 Export only selected rows ({selectedRows.length} rows)
               </label>
+            </div>
+          )}
+
+          {!exportOptions.exportSelectedRows && currentResults && (
+            <div className="download-option">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={exportOptions.exportCompleteDataset}
+                  onChange={(e) => setExportOptions(prev => ({ ...prev, exportCompleteDataset: e.target.checked }))}
+                  disabled={isExporting}
+                />
+                Export complete dataset ({currentResults.totalCount?.toLocaleString() || 'Unknown'} rows)
+              </label>
+              {!exportOptions.exportCompleteDataset && (
+                <div className="download-option-hint">
+                  Currently showing {currentResults.rowCount} of {currentResults.totalCount?.toLocaleString() || 'Unknown'} rows
+                </div>
+              )}
+            </div>
+          )}
+
+          {showCompleteDatasetWarning && (
+            <div className="download-option-warning">
+              <AlertTriangle size={16} />
+              <span>Large dataset detected. Export may take some time and use significant memory.</span>
             </div>
           )}
 
@@ -134,17 +203,36 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ isOpen, onClose }) =>
               placeholder={`Enter custom filename... (will add .${exportOptions.format})`}
               value={exportOptions.customFilename}
               onChange={(e) => setExportOptions(prev => ({ ...prev, customFilename: e.target.value }))}
+              disabled={isExporting}
             />
           </div>
+
+          {isExporting && (
+            <div className="download-option-progress">
+              <div className="progress-bar">
+                <div 
+                  className="progress-bar-fill" 
+                  style={{ width: `${exportProgress}%` }}
+                />
+              </div>
+              <div className="progress-text">
+                Exporting... {exportProgress}%
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="download-options-footer">
-          <button className="btn btn--secondary" onClick={onClose}>
+          <button className="btn btn--secondary" onClick={onClose} disabled={isExporting}>
             Cancel
           </button>
-          <button className="btn btn--primary" onClick={handleDownload}>
+          <button 
+            className="btn btn--primary" 
+            onClick={handleDownload}
+            disabled={isExporting}
+          >
             <Download size={16} />
-            Export {exportOptions.format.toUpperCase()}
+            {isExporting ? 'Exporting...' : `Export ${exportOptions.format.toUpperCase()}`}
           </button>
         </div>
       </div>

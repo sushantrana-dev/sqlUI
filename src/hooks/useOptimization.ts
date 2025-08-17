@@ -1,6 +1,4 @@
-import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../types';
+import { useCallback, useMemo, useEffect, useState } from 'react';
 
 // Debounced hook for search inputs
 export const useDebounce = <T>(value: T, delay: number): T => {
@@ -19,87 +17,12 @@ export const useDebounce = <T>(value: T, delay: number): T => {
   return debouncedValue;
 };
 
-// Memoized selector hook for Redux state
-export const useMemoizedSelector = <T>(
-  selector: (state: RootState) => T,
-  deps: any[] = []
-): T => {
-  return useMemo(() => {
-    return useSelector(selector);
-  }, deps);
-};
-
-// Custom hook for expensive calculations
-export const useExpensiveCalculation = <T>(
-  calculation: () => T,
-  deps: any[]
-): T => {
-  return useMemo(calculation, deps);
-};
-
-// Hook for intersection observer (lazy loading)
-export const useIntersectionObserver = (
-  callback: () => void,
-  options: IntersectionObserverInit = {}
-) => {
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const elementRef = useRef<HTMLElement | null>(null);
-
-  const setElement = useCallback((element: HTMLElement | null) => {
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
-
-    if (element) {
-      observerRef.current = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            callback();
-          }
-        });
-      }, options);
-
-      observerRef.current.observe(element);
-      elementRef.current = element;
-    }
-  }, [callback, options]);
-
-  useEffect(() => {
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, []);
-
-  return setElement;
-};
-
 // Hook for stable callback references
 export const useStableCallback = <T extends (...args: any[]) => any>(
   callback: T,
   deps: any[] = []
 ): T => {
   return useCallback(callback, deps);
-};
-
-// Hook for memoized object creation
-export const useMemoizedObject = <T extends object>(
-  factory: () => T,
-  deps: any[]
-): T => {
-  return useMemo(factory, deps);
-};
-
-// Hook for conditional rendering optimization
-export const useConditionalRender = (
-  condition: boolean,
-  component: React.ReactNode,
-  fallback: React.ReactNode = null
-) => {
-  return useMemo(() => {
-    return condition ? component : fallback;
-  }, [condition, component, fallback]);
 };
 
 // Hook for search optimization

@@ -136,7 +136,7 @@ const QueryHistorySidebar: React.FC = () => {
   if (!showHistory) return null;
 
   return (
-    <div className="query-history-sidebar">
+    <div className="query-history-sidebar" data-testid="query-history-sidebar">
       <div className="query-history-sidebar__header">
         <div className="query-history-sidebar__title">
           <History size={20} />

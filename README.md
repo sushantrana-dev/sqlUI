@@ -6,7 +6,7 @@ A modern, high-performance SQL query execution interface built with React, Redux
 
 ## 🚀 Live Demo
 
-**[View Live Application](https://atlan-sql-viewer-demo.netlify.app)**
+**[View Live Application](https://sql-ui-ten.vercel.app/)**
 
 ## 📹 Implementation Walkthrough
 

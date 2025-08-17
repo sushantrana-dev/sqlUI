@@ -48,13 +48,14 @@
 .header {
   &__brand {
     display: flex;
-    align-items: center;
+    align-items: end;
     gap: var(--spacing-md);
     
     &-logo {
       height: 2rem;
-      width: auto;
+      width: 6.42rem;
       flex-shrink: 0;
+      object-fit: contain;
     }
     
     &-title {
@@ -327,6 +328,13 @@
   }
   
   .header {
+    &__brand {
+      &-logo {
+        height: 1.5rem;
+        width: 4.82rem; /* 1.5rem * 3.21 */
+      }
+    }
+    
     &__brand-title {
       font-size: var(--font-size-md);
     }

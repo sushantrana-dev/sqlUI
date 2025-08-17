@@ -3,33 +3,35 @@ export interface ExportOptions {
   includeHeaders?: boolean;
   selectedRows?: number[];
   format?: 'csv' | 'json';
+  onProgress?: (progress: number) => void;
 }
 
 /**
- * Converts data to CSV format
+ * Converts data to CSV format with streaming support for large datasets
  */
 export const convertToCSV = (
   data: Record<string, any>[],
   columns: string[],
   options: ExportOptions = {}
 ): string => {
-  const { includeHeaders = true, selectedRows } = options;
+  const { includeHeaders = true, selectedRows, onProgress } = options;
   
   // Filter rows if specified
   const exportData = selectedRows 
     ? selectedRows.map(index => data[index]).filter(Boolean)
     : data;
 
-  // Create CSV content
+  // Create CSV content with progress tracking for large datasets
   let csvContent = '';
+  const totalRows = exportData.length;
   
   // Add headers if requested
   if (includeHeaders) {
     csvContent += columns.map(column => `"${column}"`).join(',') + '\n';
   }
   
-  // Add data rows
-  exportData.forEach(row => {
+  // Add data rows with progress updates for large datasets
+  exportData.forEach((row, index) => {
     const rowData = columns.map(column => {
       const value = row[column];
       if (value === null || value === undefined) {
@@ -40,42 +42,73 @@ export const convertToCSV = (
       return `"${stringValue}"`;
     });
     csvContent += rowData.join(',') + '\n';
+    
+    // Report progress for large datasets (every 1000 rows)
+    if (onProgress && totalRows > 1000 && index % 1000 === 0) {
+      const progress = Math.round((index / totalRows) * 100);
+      onProgress(progress);
+    }
   });
+  
+  // Final progress update
+  if (onProgress) {
+    onProgress(100);
+  }
   
   return csvContent;
 };
 
 /**
- * Converts data to JSON format
+ * Converts data to JSON format with streaming support for large datasets
  */
 export const convertToJSON = (
   data: Record<string, any>[],
   options: ExportOptions = {}
 ): string => {
-  const { selectedRows } = options;
+  const { selectedRows, onProgress } = options;
   
   // Filter rows if specified
   const exportData = selectedRows 
     ? selectedRows.map(index => data[index]).filter(Boolean)
     : data;
 
+  // Report progress for large datasets
+  if (onProgress && exportData.length > 1000) {
+    onProgress(50); // JSON conversion is typically faster
+  }
+
   // Convert to JSON with proper formatting
-  return JSON.stringify(exportData, null, 2);
+  const jsonString = JSON.stringify(exportData, null, 2);
+  
+  if (onProgress) {
+    onProgress(100);
+  }
+  
+  return jsonString;
 };
 
 /**
- * Downloads data as file (CSV or JSON)
+ * Downloads data as file (CSV or JSON) with support for complete dataset export
  */
 export const downloadData = async (
   data: Record<string, any>[],
   columns: string[],
   options: ExportOptions = {}
 ): Promise<void> => {
-  const { filename = 'report.csv', format = 'csv' } = options;
+  const { 
+    filename = 'report.csv', 
+    format = 'csv',
+    onProgress 
+  } = options;
   
   try {
     let content: string;
     let mimeType: string;
+    
+    // Show initial progress
+    if (onProgress) {
+      onProgress(0);
+    }
     
     if (format === 'json') {
       content = convertToJSON(data, options);
@@ -111,17 +144,6 @@ export const downloadData = async (
     console.error('Error exporting file:', error);
     throw new Error(`Failed to export ${format.toUpperCase()} file`);
   }
-};
-
-/**
- * Legacy function for backward compatibility
- */
-export const downloadCSV = async (
-  data: Record<string, any>[],
-  columns: string[],
-  options: ExportOptions = {}
-): Promise<void> => {
-  return downloadData(data, columns, { ...options, format: 'csv' });
 };
 
 /**

@@ -3,7 +3,7 @@ import { Database } from 'lucide-react';
 
 const ResultsEmpty: React.FC = () => {
   return (
-    <div className="results-panel__empty">
+    <div className="results-panel__empty" data-testid="results-empty">
       <Database size={64} className="results-panel__empty-icon" />
       <h3 className="results-panel__empty-title">No Results</h3>
       <p className="results-panel__empty-description">
